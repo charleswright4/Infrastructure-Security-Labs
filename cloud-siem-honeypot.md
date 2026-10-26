@@ -1,98 +1,84 @@
-# Cloud SIEM Lab: Azure Sentinel RDP Honeypot with Attack Map
+# Vulnerability Management & Remediation Lab (Tenable Nessus + PowerShell)
 
 ## Overview
-I deployed an intentionally exposed Windows VM in Azure, captured failed RDP logon attempts (Event ID 4625), enriched the source IPs with geolocation data using PowerShell, ingested the logs into Microsoft Sentinel, and plotted attack origins on a world map.
+A home-lab project where I built an intentionally under-patched Windows Server in Azure, scanned it with Tenable Nessus, prioritized the findings, remediated them with PowerShell, and re-scanned to measure improvement. Policy and stakeholder steps are written up as a process I followed against a **simulated** organization; the technical work and results are from my own lab.
 
-> ⚠️ **Safety:** Use a dedicated lab subscription, set a budget alert, and delete the resource group when finished. Never put real data or credentials on a honeypot.
+![Vulnerability management lifecycle](images/vuln-workflow.svg)
 
 ## Tools
-Microsoft Sentinel | Log Analytics Workspace | Azure VM (Windows) | PowerShell | ipgeolocation.io (free tier) | KQL
+Tenable Nessus Essentials (free) | Azure VM (Windows Server 2019/2022) | PowerShell
 
-## Architecture
-```text
-Internet attackers --> Azure VM (RDP open) --> Event ID 4625
-        --> PowerShell script + geolocation API --> failed_rdp.log
-        --> Log Analytics custom log --> Sentinel workbook map
-```
+## Lab Setup
+1. Create an Azure VM (Windows Server) in its own resource group. Keep it in a lab subscription and set a budget alert.
+2. Install Nessus Essentials on a second VM or locally and register for a free activation code.
+3. On the target VM, disable Windows Firewall and Windows Update for the *initial* scan so there are findings to fix. Do this only on a lab VM.
 
-## Step 1: Build the Honeypot
-1. Create a Windows VM; in its Network Security Group allow inbound RDP (3389) from `Any`.
-2. Create a Log Analytics workspace and enable Microsoft Sentinel on it.
-3. Connect the VM with the Azure Monitor Agent.
-4. Turn off the Windows Firewall on the VM (lab only) so attempts are logged.
 
-📸 **Screenshot:** NSG inbound rules → `images/01-nsg.png`
+## Step 1: Initial Credentialed Scan
+Run a Basic Network Scan with Windows credentials against the target.
 
-## Step 2: Confirm Attack Data in Event Viewer
-After a few hours, open Event Viewer → Windows Logs → Security and filter for **4625**.
 
-📸 **Screenshot:** Real 4625 events from your VM → `images/02-event-viewer.png`
+The scan summary's severity counts (critical, high, medium, low) become the baseline for the before/after comparison in Step 4.
 
-## Step 3: Geolocation Script
-Sign up for a free API key at ipgeolocation.io and paste it below. The script tracks processed event IDs so it doesn't re-log the same attempt.
+## Step 2: Prioritization
+Findings are ranked by severity and ease of fix. A typical order for an unhardened Windows Server:
+
+| Priority | Finding | Fix |
+|---|---|---|
+| 1 | Missing Windows security updates | Windows Update |
+| 2 | Guest in local Administrators | Remove membership |
+| 3 | Outdated third-party software | Uninstall/upgrade |
+| 4 | SMB signing not required | Require signing |
+| 5 | RDP without NLA | Enable NLA |
+| 6 | Weak LAN Manager auth level | NTLMv2 only |
+
+## Step 3: Remediation Script
+Run in an elevated PowerShell session on the target. Review each line before running.
 
 ```powershell
-$API_KEY      = "YOUR_API_KEY_HERE"
-$LOGFILE_PATH = "C:\ProgramData\failed_rdp.log"
-$seen         = New-Object System.Collections.Generic.HashSet[long]
+#Requires -RunAsAdministrator
+# Lab remediation script - test on lab VMs only
 
-if (-not (Test-Path $LOGFILE_PATH)) { New-Item -ItemType File -Path $LOGFILE_PATH -Force | Out-Null }
+# 1. Remove Guest from local Administrators
+Remove-LocalGroupMember -Group "Administrators" -Member "Guest" -ErrorAction SilentlyContinue
 
-Write-Host "[+] Starting RDP honeypot log exporter..." -ForegroundColor Cyan
+# 2. Require SMB signing
+Set-SmbServerConfiguration -RequireSecuritySignature $true -Force
 
-while ($true) {
-    $events = Get-WinEvent -FilterHashtable @{LogName='Security'; ID=4625} -MaxEvents 200 -ErrorAction SilentlyContinue
-    foreach ($e in $events) {
-        if (-not $seen.Add($e.RecordId)) { continue }
+# 3. Require Network Level Authentication for RDP
+Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' `
+    -Name 'UserAuthentication' -Value 1
 
-        $data = ([xml]$e.ToXml()).Event.EventData.Data
-        $ip   = ($data | Where-Object Name -eq 'IpAddress').'#text'
-        $user = ($data | Where-Object Name -eq 'TargetUserName').'#text'
+# 4. LAN Manager auth level 5 = send NTLMv2 only, refuse LM and NTLM
+Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa' `
+    -Name 'LmCompatibilityLevel' -Value 5
 
-        if ($ip -and $ip -ne '-') {
-            $uri  = "https://api.ipgeolocation.io/ipgeo?apiKey=$API_KEY&ip=$ip"
-            $resp = Invoke-RestMethod -Uri $uri -Method Get -ErrorAction SilentlyContinue
-            if ($resp) {
-                $line = "latitude:$($resp.latitude),longitude:$($resp.longitude),sourcehost:$ip,username:$user,country:$($resp.country_name),state:$($resp.state_prov),timestamp:$($e.TimeCreated.ToString('s'))"
-                Add-Content -Path $LOGFILE_PATH -Value $line
-                Write-Host "Logged -> $ip | $($resp.country_name)"
-                Start-Sleep -Milliseconds 1200   # stay inside free-tier rate limits
-            }
-        }
-    }
-    Start-Sleep -Seconds 10
-}
+# 5. Remove outdated Wireshark (adjust to whatever Nessus flagged)
+winget uninstall --id WiresharkFoundation.Wireshark --silent
+
+# 6. Re-enable and run Windows Update
+Set-Service -Name wuauserv -StartupType Manual
+Start-Service wuauserv
+Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled True
+
+Write-Host "Remediation complete. Reboot, then re-scan." -ForegroundColor Green
 ```
 
-📸 **Screenshot:** Script output in PowerShell → `images/03-script.png`
 
-## Step 4: Ingest and Map in Sentinel
-1. Log Analytics workspace → Tables → Create → **New custom log (MMA-based)**, upload a sample of `failed_rdp.log`, set the path to `C:\ProgramData\failed_rdp.log`, and name it `FAILED_RDP_CL`. (Azure's custom-log options change often; follow the current prompts.)
-2. Run this KQL:
+## Step 4: Re-scan and Measure
+Reboot the target, then run the same scan policy again so the comparison is like for like.
 
-```kql
-FAILED_RDP_CL
-| extend Latitude  = extract("latitude:([^,]+)", 1, RawData)
-| extend Longitude = extract("longitude:([^,]+)", 1, RawData)
-| extend SourceIp  = extract("sourcehost:([^,]+)", 1, RawData)
-| extend Username  = extract("username:([^,]+)", 1, RawData)
-| extend Country   = extract("country:([^,]+)", 1, RawData)
-| summarize Attempts = count() by SourceIp, Country, Latitude, Longitude
-| order by Attempts desc
-```
+| Metric | Where it comes from |
+|---|---|
+| Critical / High / Medium / Total findings (before) | Initial scan summary |
+| Critical / High / Medium / Total findings (after) | Post-remediation scan summary |
+| Improvement | (before - after) / before |
 
-3. Sentinel → Workbooks → New → Add query → set visualization to **Map**, using Latitude/Longitude and Attempts as size.
+Any finding that remains is documented with a reason (for example, an accepted risk or a fix that needs a change-control window), which mirrors how remediation is tracked in a real program.
 
-📸 **Screenshot:** Your real attack map → `images/04-attack-map.png`
-
-## Results
-- Run time: `[YOUR RESULT: e.g. 24 hours]`
-- Total failed attempts: `[#]`
-- Top source countries: `[YOUR RESULT]`
-- Most targeted usernames: `[YOUR RESULT]`
-
-## Takeaways
-`[2-3 honest sentences: e.g. how quickly attacks began, why exposed RDP is risky, what controls you'd use in production such as NLA, MFA, VPN/Bastion]`
-
-## Cleanup
-Delete the resource group when done to stop charges.
+## Key Takeaways
+- Credentialed scans surface far more accurate findings than uncredentialed ones.
+- Prioritize by risk and effort so the biggest exposure shrinks first.
+- Scripted fixes are repeatable and auditable; always test on a lab host first.
+- A re-scan with the same policy is the proof that remediation worked.
+- Next step: schedule weekly scans and report trends over time.
