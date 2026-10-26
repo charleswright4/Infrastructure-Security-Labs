@@ -6,16 +6,6 @@ Hands-on projects covering the work I do and want to do more of: keeping enterpr
 
 ---
 
-## Why This Repository Exists
-Certifications prove knowledge. Hiring managers also want to know:
-- Can this person actually do the work?
-- Can they explain it clearly?
-- Do they think about risk, process, and the people affected?
-
-These projects are my answer. Each one follows the same pattern: **set up → find the problem → fix it → prove it worked → write down what I learned.**
-
----
-
 ## Projects
 
 | Project | Focus | Tools |
