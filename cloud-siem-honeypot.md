@@ -3,8 +3,6 @@
 ## Overview
 A home-lab project where I built an intentionally under-patched Windows Server in Azure, scanned it with Tenable Nessus, prioritized the findings, remediated them with PowerShell, and re-scanned to measure improvement. Policy and stakeholder steps are written up as a process I followed against a **simulated** organization; the technical work and results are from my own lab.
 
-![Vulnerability management lifecycle](images/vuln-workflow.svg)
-
 ## Tools
 Tenable Nessus Essentials (free) | Azure VM (Windows Server 2019/2022) | PowerShell
 
