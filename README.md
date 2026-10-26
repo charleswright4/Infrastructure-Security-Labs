@@ -21,7 +21,7 @@ These projects are my answer. Each one follows the same pattern: **set up → fi
 | Project | Focus | Tools |
 |---|---|---|
 | [Vulnerability Management & Remediation](vulnerability-management-program.md) | Scan, prioritize, remediate, re-scan | Tenable Nessus, Azure, PowerShell |
-| [Azure Sentinel RDP Honeypot](cloud-siem-honeypot.md) | Threat telemetry and SIEM visualization | Microsoft Sentinel, KQL, PowerShell |
+| [Azure Sentinel RDP Honeypot](azure-sentinel-rdp-honeypot.md) | Threat telemetry and SIEM visualization | Microsoft Sentinel, KQL, PowerShell |
 | [Cisco & Active Directory Hardening](network-ad-hardening.md) | Network segmentation and identity controls | Cisco IOS, Active Directory, GPO |
 
 ---
