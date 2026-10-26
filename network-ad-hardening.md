@@ -1,110 +1,101 @@
-# Network & Identity Hardening Lab (Cisco IOS + Active Directory GPO)
+# Cisco IOS & Active Directory Hardening
 
 ## Overview
-Two parts of one lab: (1) securing a Cisco switch with VLAN segmentation, port security, and SSH-only management, and (2) building an Active Directory structure with Group Policy enforcing password, lockout, and firewall baselines. Built in a virtual lab; results below are from my own testing.
 
-## Tools
-Cisco Packet Tracer (free from Cisco NetAcad) or GNS3 | Windows Server 2022 evaluation VM (Hyper-V/VirtualBox/Azure) | PowerShell | Group Policy
+In this home lab project, I implemented core network security and identity management controls using Cisco IOS and Active Directory.
 
----
-
-## Part 1: Cisco Switch Hardening
-
-### Topology
-`[PC1] --Gi0/1-- [Switch] --Gi0/24-- [Admin PC]`
-
-📸 **Screenshot:** Packet Tracer topology → `images/01-topology.png`
-
-### Configuration
-```text
-enable
-configure terminal
-hostname SW1
-ip domain-name lab.local
-
-! VLANs
-vlan 10
- name Management
-vlan 20
- name Corporate-Data
-exit
-
-! Access port with port security
-interface GigabitEthernet0/1
- switchport mode access
- switchport access vlan 20
- switchport port-security
- switchport port-security maximum 1
- switchport port-security mac-address sticky
- switchport port-security violation shutdown
- exit
-
-! Management SVI
-interface vlan 10
- ip address 192.168.10.2 255.255.255.0
- no shutdown
- exit
-
-! SSH v2 only
-username admin secret StrongLabPass!2026
-crypto key generate rsa modulus 2048
-ip ssh version 2
-line vty 0 4
- login local
- transport input ssh
- exit
-
-enable secret StrongEnablePass!2026
-service password-encryption
-end
-write memory
-```
-
-### Verification
-```text
-show vlan brief
-show port-security interface GigabitEthernet0/1
-show ip ssh
-```
-
-📸 **Screenshot:** Output of the three show commands → `images/02-cisco-verify.png`
-
-**Test:** Plug a second device into Gi0/1 and confirm the port goes err-disabled. `[YOUR RESULT]`
+The goal was to demonstrate how network segmentation, device hardening, identity controls, and Group Policy work together to reduce attack surface and improve security across an enterprise environment.
 
 ---
 
-## Part 2: Active Directory & Group Policy
+## The Approach
 
-### Step 1: Build the Domain
-Install the AD DS role on Windows Server and promote to a new forest (e.g. `lab.local`).
+A Cisco-based network environment was configured with VLAN segmentation, port security, and secure management protocols.
 
-### Step 2: Create OUs and Users
-```powershell
-$base = "DC=lab,DC=local"
-New-ADOrganizationalUnit -Name "Corp"        -Path $base
-New-ADOrganizationalUnit -Name "Users"       -Path "OU=Corp,$base"
-New-ADOrganizationalUnit -Name "Workstations" -Path "OU=Corp,$base"
-New-ADOrganizationalUnit -Name "Admins"      -Path "OU=Corp,$base"
-```
+An Active Directory domain was deployed to centralize authentication and authorization. Organizational Units (OUs), Group Policy Objects (GPOs), and account security settings were used to establish baseline security controls.
 
-### Step 3: Password and Lockout Policy
-```powershell
-Set-ADDefaultDomainPasswordPolicy -Identity lab.local `
-  -MinPasswordLength 14 -ComplexityEnabled $true `
-  -LockoutThreshold 5 -LockoutDuration 00:30:00 -LockoutObservationWindow 00:30:00
-```
+---
 
-### Step 4: Firewall GPO
-Group Policy Management → create a GPO linked to `Workstations` → Computer Configuration → Windows Settings → Security Settings → Windows Defender Firewall → enable Domain, Private, and Public profiles.
+## Impact
 
-### Step 5: Verify
-```powershell
-Get-ADDefaultDomainPasswordPolicy
-Get-ADOrganizationalUnit -Filter * | Select Name, DistinguishedName
-gpresult /r
-```
+This project demonstrates how layered security controls at both the network and identity level can help protect enterprise systems and reduce operational risk.
 
-📸 **Screenshots:** OU tree, GPO settings, and `gpresult` on a joined client → `images/03-ad-ou.png`, `images/04-gpo.png`, `images/05-gpresult.png`
+---
+
+## Network Topology
+
+A segmented network architecture was created using Cisco switches and VLANs to separate traffic and reduce exposure between systems.
+
+![Network Topology](networktopology.jpg)
+
+The network design improves visibility, security, and administrative control.
+
+---
+
+## Cisco Security Configuration
+
+Cisco IOS was configured with security best practices including port security, SSH management, and VLAN segmentation.
+
+![Cisco Configuration](ciscoconfiguration.jpg)
+
+These controls help prevent unauthorized access and improve network resilience.
+
+---
+
+## Active Directory Structure
+
+An Active Directory environment was configured to organize users, groups, and devices using Organizational Units (OUs).
+
+![Active Directory Structure](adstructure.jpg)
+
+Administrative controls were applied using role-based access principles and centralized management.
+
+---
+
+## Group Policy Hardening
+
+Group Policy was used to establish security baselines across the environment.
+
+![Group Policy Management](grouppolicy.jpg)
+
+Policies were implemented to enforce password requirements, account lockout settings, firewall rules, and system security controls.
+
+---
 
 ## Results
-`[YOUR RESULT: what you configured, what you tested, anything that broke and how you fixed it]`
+
+### Security Improvements
+
+- Network segmentation implemented
+- SSH-only administrative access enabled
+- Port security configured
+- Active Directory centralized authentication established
+- Group Policy security baselines applied
+- Administrative controls strengthened
+
+### Outcome
+
+The environment demonstrated improved security through layered controls spanning networking, identity management, and endpoint hardening.
+
+---
+
+## Skills Demonstrated
+
+- Cisco IOS
+- VLAN Configuration
+- Network Security
+- Port Security
+- Active Directory
+- Group Policy
+- Identity Management
+- Security Hardening
+- Network Administration
+- Windows Server
+
+---
+
+## Lessons Learned
+
+This project reinforced the importance of combining network controls with identity security.
+
+Strong authentication, proper access controls, and secure network design work together to reduce risk and support operational stability in enterprise environments.
