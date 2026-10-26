@@ -2,7 +2,7 @@
 
 ## Overview
 
-In this home lab project, I implemented core network security and identity management controls using Cisco IOS and Active Directory.
+In this home lab project, A core network security and identity management controls using Cisco IOS and Active Directory.
 
 The goal was to demonstrate how network segmentation, device hardening, identity controls, and Group Policy work together to reduce attack surface and improve security across an enterprise environment.
 
