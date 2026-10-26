@@ -11,9 +11,8 @@ Cisco Packet Tracer (free from Cisco NetAcad) or GNS3 | Windows Server 2022 eval
 ## Part 1: Cisco Switch Hardening
 
 ### Topology
-`[PC1] --Gi0/1-- [Switch] --Gi0/24-- [Admin PC]`
+![Switch topology](images/network-topology.svg)
 
-📸 **Screenshot:** Packet Tracer topology → `images/01-topology.png`
 
 ### Configuration
 ```text
@@ -37,6 +36,12 @@ interface GigabitEthernet0/1
  switchport port-security maximum 1
  switchport port-security mac-address sticky
  switchport port-security violation shutdown
+ exit
+
+! Admin port in the Management VLAN
+interface GigabitEthernet0/24
+ switchport mode access
+ switchport access vlan 10
  exit
 
 ! Management SVI
@@ -67,9 +72,8 @@ show port-security interface GigabitEthernet0/1
 show ip ssh
 ```
 
-📸 **Screenshot:** Output of the three show commands → `images/02-cisco-verify.png`
 
-**Test:** Plug a second device into Gi0/1 and confirm the port goes err-disabled. `[YOUR RESULT]`
+**Test:** Connect a second device to Gi0/1. Because port security allows one MAC and the violation mode is `shutdown`, the port should go err-disabled. Confirm with `show interfaces status err-disabled`.
 
 ---
 
@@ -77,6 +81,8 @@ show ip ssh
 
 ### Step 1: Build the Domain
 Install the AD DS role on Windows Server and promote to a new forest (e.g. `lab.local`).
+
+![AD OU and GPO structure](images/ad-structure.svg)
 
 ### Step 2: Create OUs and Users
 ```powershell
@@ -104,7 +110,14 @@ Get-ADOrganizationalUnit -Filter * | Select Name, DistinguishedName
 gpresult /r
 ```
 
-📸 **Screenshots:** OU tree, GPO settings, and `gpresult` on a joined client → `images/03-ad-ou.png`, `images/04-gpo.png`, `images/05-gpresult.png`
 
-## Results
-`[YOUR RESULT: what you configured, what you tested, anything that broke and how you fixed it]`
+## Verification Checklist
+- `show port-security interface Gi0/1` shows maximum 1 and a learned sticky MAC.
+- `show ip ssh` reports SSH version 2; Telnet is refused.
+- `Get-ADDefaultDomainPasswordPolicy` returns the 14-character minimum and lockout settings.
+- `gpresult /r` on a joined workstation lists the firewall GPO as applied.
+
+## Key Takeaways
+- Segmenting management from user traffic limits what a compromised endpoint can reach.
+- Port security stops unauthorized devices at the access layer.
+- Group Policy enforces a baseline consistently instead of machine by machine.
