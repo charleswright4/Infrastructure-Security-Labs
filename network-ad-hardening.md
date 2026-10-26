@@ -11,7 +11,8 @@ Cisco Packet Tracer (free from Cisco NetAcad) or GNS3 | Windows Server 2022 eval
 ## Part 1: Cisco Switch Hardening
 
 ### Topology
-![Switch topology](images/network-topology.svg)
+![Switch topology](<img width="1120" height="360" alt="image" src="https://github.com/user-attachments/assets/093b9ef2-7f12-41d2-b417-eafeb2f37799" />
+)
 
 
 ### Configuration
