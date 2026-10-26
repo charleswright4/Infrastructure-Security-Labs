@@ -32,15 +32,12 @@ Hands-on projects covering the work I do and want to do more of: keeping enterpr
 - SIEM log ingestion, KQL queries, dashboards
 - Network segmentation, port security, secure remote management
 - Scripting and automation (PowerShell, Bash)
-- Technical writing and stakeholder-friendly reporting
+- Technical writing and stakeholder reporting
 
 ---
 
 ## Repository Notes
 - All environments are **lab builds**. No production systems, real credentials, or customer data are involved.
-- Where a project references processes such as policy approval or change review, they are written as a practice walkthrough, not as claims about a past employer.
-- Screenshots are in the `images/` folder of this repository.
-- Scripts are for lab use. Review them before running anywhere else.
 
 ---
 
