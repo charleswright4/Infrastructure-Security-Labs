@@ -28,7 +28,7 @@ This project demonstrates how a cloud-based SIEM can be used to collect logs, in
 
 A Windows virtual machine was deployed within Azure and configured as a honeypot system.
 
-![Azure Architecture](honeypot-architecture.jpg)
+![Azure Architecture](honeypotarchitecture.jpg)
 
 The VM was intentionally exposed to receive authentication attempts from external sources.
 
@@ -38,7 +38,7 @@ The VM was intentionally exposed to receive authentication attempts from externa
 
 Windows Security Event Logs were forwarded to Microsoft Sentinel for analysis.
 
-![Log Collection](log-ingestion.jpg)
+![Log Collection](logingestion.jpg)
 
 The collected logs provided visibility into failed login attempts and attacker behavior.
 
@@ -48,7 +48,7 @@ The collected logs provided visibility into failed login attempts and attacker b
 
 KQL queries were used to identify failed login attempts and investigate attack patterns.
 
-![KQL Investigation](kql-investigation.jpg)
+![KQL Investigation](kqlinvestigation.jpg)
 
 Events were reviewed to determine attack frequency, source IP addresses, and authentication failures.
 
@@ -58,7 +58,7 @@ Events were reviewed to determine attack frequency, source IP addresses, and aut
 
 Geolocation data was used to map failed login attempts.
 
-![Attack Map](attack-map.jpg)
+![Attack Map](attackmap.jpg)
 
 The attack map provided a visual representation of connection attempts and attack origins.
 
