@@ -2,9 +2,9 @@
 
 ## Overview
 
-In this home lab project, I deployed a Windows virtual machine in Microsoft Azure and intentionally exposed Remote Desktop Protocol (RDP) services to the internet in order to attract unauthorized authentication attempts.
+A Windows virtual machine is deployed in Microsoft Azure and intentionally exposed Remote Desktop Protocol (RDP 3389) services to the internet in order to attract unauthorized authentication attempts.
 
-The goal was to collect real-world attack telemetry, ingest logs into Microsoft Sentinel, and visualize attacker activity using KQL queries and geolocation data.
+The goal was to collect real world attack telemetry, ingest logs into Microsoft Sentinel and visualize attacker activity using KQL queries and geolocation data.
 
 ---
 
@@ -14,13 +14,13 @@ A Windows virtual machine was deployed within Azure and configured to allow inbo
 
 Microsoft Sentinel was configured to collect security logs and monitor failed authentication attempts.
 
-Using PowerShell and KQL, failed login events were analyzed and enriched with geolocation data to identify attack sources and patterns.
+Using PowerShell and KQL failed login events were analyzed and gathered with geolocation data to identify attack sources and patterns.
 
 ---
 
 ## Impact
 
-This project demonstrates how a cloud-based SIEM can be used to collect logs, investigate suspicious activity, and provide visibility into real-world attack attempts against exposed systems.
+This project demonstrate how a azure cloud SIEM can be used to collect logs, investigate suspicious activity and provide visibility into real world attack attempts against exposed systems.
 
 ---
 
@@ -36,7 +36,7 @@ The VM was intentionally exposed to receive authentication attempts from externa
 
 ## Log Collection
 
-Windows Security Event Logs were forwarded to Microsoft Sentinel for analysis.
+Windows Security Event Logs were sent to Microsoft Sentinel for analysis.
 
 ![Log Collection](../images/logingestion.jpg)
 
@@ -50,7 +50,7 @@ KQL queries were used to identify failed login attempts and investigate attack p
 
 ![KQL Investigation](../images/kqlinvestigation.jpg)
 
-Events were reviewed to determine attack frequency, source IP addresses, and authentication failures.
+Events were reviewed to determine attack frequency, source IP addresses and authentication failures.
 
 ---
 
@@ -64,36 +64,17 @@ The attack map provided a visual representation of connection attempts and attac
 
 ---
 
-## Results
+### Security Results / Insights
 
-### Security Insights
-
-- Real-world attack telemetry collected
+- Real world attack telemetry gathered
 - Failed authentication attempts analyzed
 - Geolocation mapping completed
 - Microsoft Sentinel dashboards created
-
-### Outcome
-
-The project successfully demonstrated cloud-based security monitoring, log analysis, threat hunting, and attack visualization using Microsoft Sentinel.
-
----
-
-## Skills Demonstrated
-
-- Microsoft Sentinel
-- KQL
-- SIEM Operations
-- Threat Hunting
-- Azure
-- Log Analytics
-- Security Monitoring
-- Incident Investigation
 
 ---
 
 ## Lessons Learned
 
-This project reinforced the importance of log visibility and continuous monitoring.
+This project reinforces the importance of log visibility and continuous monitoring.
 
 Without centralized logging and analysis, attack activity can go undetected even when systems are actively being targeted.
