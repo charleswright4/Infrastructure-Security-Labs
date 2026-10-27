@@ -1,5 +1,5 @@
 SecurityEvent
-| where EventID == 4625
-| summarize Count=count()
-by Country
+| where EventID == 4625 and IpAddress != "-"
+| extend Country = tostring(geo_info_from_ip_address(IpAddress).country)
+| summarize Count = count() by Country
 | order by Count desc
