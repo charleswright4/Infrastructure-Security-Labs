@@ -76,3 +76,14 @@ Improved security through layered controls in networking, identity management an
 Improves infrastructure by combining network controls with identity security.
 
 Strong authentication with proper access controls, and secure network design work to reduce risk and support operational stability in enterprise environments.
+
+
+
+## Repository Artifacts
+
+### Active Directory Automation
+
+[View AD User Creation Script](../scripts/ad-user-creation.ps1)
+
+Demonstrates PowerShell-based Active Directory user creation and administrative automation.
+
