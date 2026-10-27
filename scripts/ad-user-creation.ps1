@@ -9,17 +9,17 @@ Author:
 Charles Wright
 #>
 
+
+
 Import-Module ActiveDirectory
+
+$Password = Read-Host "Enter temporary password" -AsSecureString
 
 New-ADUser `
     -Name "Test User" `
     -GivenName "Test" `
     -Surname "User" `
     -SamAccountName "tuser" `
-    -Enabled $true `
-    -AccountPassword (
-        ConvertTo-SecureString `
-        "Password123!" `
-        -AsPlainText `
-        -Force
-    )
+    -AccountPassword $Password `
+    -ChangePasswordAtLogon $true `
+    -Enabled $true
