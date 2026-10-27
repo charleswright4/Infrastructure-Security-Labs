@@ -78,3 +78,23 @@ The attack map provided a visual representation of connection attempts and attac
 This project reinforces the importance of log visibility and continuous monitoring.
 
 Without centralized logging and analysis, attack activity can go undetected even when systems are actively being targeted.
+
+
+
+## Repository Artifacts
+
+### PowerShell Analysis Script
+
+[View Failed RDP Analysis Script](../scripts/failed-rdp-analysis.ps1)
+
+Used to review Windows Security Event logs for failed authentication attempts.
+
+### KQL Queries
+
+[View Failed Login Query](../queries/failed-logins.kql)
+
+[View Attack Map Query](../queries/attack-map.kql)
+
+[View High Volume IP Query](../queries/high-volume-ip.kql)
+
+These queries were used within Microsoft Sentinel to identify attack patterns, analyze authentication failures and visualize geolocation data.
