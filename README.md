@@ -10,9 +10,9 @@ Hands on projects covering the work I do and want to do more of keeping infrastr
 
 | Project | Focus | Tools |
 |---|---|---|
-| [Vulnerability Management & Remediation](vulnerability-management-program.md) | Scan, prioritize, remediate, re-scan | Tenable Nessus, Azure, PowerShell |
-| [Azure Sentinel RDP Honeypot](azure-sentinel-rdp-honeypot.md) | Threat telemetry and SIEM visualization | Microsoft Sentinel, KQL, PowerShell |
-| [Cisco & Active Directory Hardening](network-ad-hardening.md) | Network segmentation and identity controls | Cisco IOS, Active Directory, GPO |
+| [Vulnerability Management & Remediation](labs/vulnerability-management-program.md) | Scan, prioritize, remediate, re-scan | Tenable Nessus, Azure, PowerShell |
+| [Azure Sentinel RDP Honeypot](labs/azure-sentinel-rdp-honeypot.md) | Threat telemetry and SIEM visualization | Microsoft Sentinel, KQL, PowerShell |
+| [Cisco & Active Directory Hardening](labs/network-ad-hardening.md) | Network segmentation and identity controls | Cisco IOS, Active Directory, GPO |
 
 ---
 
