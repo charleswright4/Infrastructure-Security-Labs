@@ -84,18 +84,16 @@ Without centralized logging and analysis, attack activity can go undetected even
 
 ## Repository Artifacts
 
-### PowerShell Analysis Script
-
-[View Failed RDP Analysis Script](../scripts/failed-rdp-analysis.ps1)
-
-Used to review Windows Security Event logs for failed authentication attempts.
-
 ### KQL Queries
 
-[View Failed Login Query](../queries/failed-logins.kql)
+- [Failed logins by source IP](https://github.com/charleswright4/infrastructure-security-portfolio/blob/main/queries/failed-logins.kql)
+- [Top 10 high-volume attacking IPs](https://github.com/charleswright4/infrastructure-security-portfolio/blob/main/queries/high-volume-ip.kql)
+- [Attack map by country](https://github.com/charleswright4/infrastructure-security-portfolio/blob/main/queries/attack-map.kql)
 
-[View Attack Map Query](../queries/attack-map.kql)
+These queries filter Windows Security Event ID 4625 (failed logon) to identify attack sources, rank the most active IP addresses and summarize attempts by country using KQL geolocation.
 
-[View High Volume IP Query](../queries/high-volume-ip.kql)
+### PowerShell Script
 
-These queries were used within Microsoft Sentinel to identify attack patterns, analyze authentication failures and visualize geolocation data.
+- [Failed RDP analysis](https://github.com/charleswright4/infrastructure-security-portfolio/blob/main/scripts/failed-rdp-analysis.ps1)
+
+This script reviews the Windows Security log on the VM for failed RDP authentication attempts (Event ID 4625) and extracts the source IP address.
