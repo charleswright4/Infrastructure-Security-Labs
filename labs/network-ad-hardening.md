@@ -81,9 +81,8 @@ Strong authentication with proper access controls, and secure network design wor
 
 ## Repository Artifacts
 
-### Active Directory Automation
+### Active Directory User Creation Script
 
-[View AD User Creation Script](../scripts/ad-user-creation.ps1)
+- [AD user creation](https://github.com/charleswright4/infrastructure-security-portfolio/blob/main/scripts/ad-user-creation.ps1)
 
-PowerShell Active Directory user creation and administrative automation.
-
+This script provisions a test user account with PowerShell. It prompts for a temporary password at runtime instead of storing one in the code, and it requires a password change at first logon.
