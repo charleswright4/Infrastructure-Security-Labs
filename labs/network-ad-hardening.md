@@ -26,7 +26,7 @@ This project demonstrates how layered security controls at both the network and 
 
 A segmented network architecture was created using Cisco switches and VLANs to separate traffic and reduce exposure between systems.
 
-![Network Topology](networktopology.jpg)
+![Network Topology](../images/networktopology.jpg)
 
 The network design improves visibility, security, and administrative control.
 
@@ -36,7 +36,7 @@ The network design improves visibility, security, and administrative control.
 
 Cisco IOS was configured with security best practices including port security, SSH management, and VLAN segmentation.
 
-![Cisco Configuration](ciscoconfiguration.jpg)
+![Cisco Configuration](../images/ciscoconfiguration.jpg)
 
 These controls help prevent unauthorized access and improve network resilience.
 
@@ -46,7 +46,7 @@ These controls help prevent unauthorized access and improve network resilience.
 
 An Active Directory environment was configured to organize users, groups, and devices using Organizational Units (OUs).
 
-![Active Directory Structure](adstructure.jpg)
+![Active Directory Structure](../images/adstructure.jpg)
 
 Administrative controls were applied using role-based access principles and centralized management.
 
@@ -56,7 +56,7 @@ Administrative controls were applied using role-based access principles and cent
 
 Group Policy was used to establish security baselines across the environment.
 
-![Group Policy Management](grouppolicy.jpg)
+![Group Policy Management](../images/grouppolicy.jpg)
 
 Policies were implemented to enforce password requirements, account lockout settings, firewall rules, and system security controls.
 
