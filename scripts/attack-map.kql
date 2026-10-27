@@ -1,5 +1,0 @@
-SecurityEvent
-| where EventID == 4625
-| summarize Count=count()
-by Country
-| order by Count desc
