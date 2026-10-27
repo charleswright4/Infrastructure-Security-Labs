@@ -85,5 +85,5 @@ Strong authentication with proper access controls, and secure network design wor
 
 [View AD User Creation Script](../scripts/ad-user-creation.ps1)
 
-Demonstrates PowerShell-based Active Directory user creation and administrative automation.
+PowerShell Active Directory user creation and administrative automation.
 
