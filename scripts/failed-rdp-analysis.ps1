@@ -9,13 +9,6 @@ Author:
 Charles Wright
 #>
 
-Get-WinEvent `
-    -LogName Security `
-    -MaxEvents 500 |
-Where-Object {
-    $_.Id -eq 4625
-} |
-Select-Object `
-    TimeCreated,
-    Id,
-    MachineName
+Get-WinEvent -FilterHashtable @{ LogName = 'Security'; Id = 4625 } -MaxEvents 500 -ErrorAction SilentlyContinue |
+Select-Object TimeCreated, Id, MachineName,
+    @{Name = 'SourceIP'; Expression = { $_.Properties[19].Value }}
