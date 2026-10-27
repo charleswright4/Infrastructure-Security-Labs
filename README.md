@@ -1,4 +1,4 @@
-# Infrastructure & Security Lab
+# Infrastructure & Security Portfolio Overview
 
 Hands-on projects covering the work I do and want to do more of: keeping enterprise infrastructure healthy and making it harder to attack. Each project is built in my own lab, documented step by step, and backed by screenshots and measured results.
 
