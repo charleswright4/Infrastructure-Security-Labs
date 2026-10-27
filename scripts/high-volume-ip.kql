@@ -1,6 +1,0 @@
-SecurityEvent
-| where EventID == 4625
-| summarize Attempts=count()
-by IpAddress
-| order by Attempts desc
-| take 10
