@@ -26,10 +26,5 @@ Hands on projects covering the work I do and want to do more of keeping infrastr
 
 ---
 
-## Repository Notes
-- All environments are **lab builds**. No production systems, real credentials, or customer data are involved.
-
----
-
 ## Contact
 📫 [linkedin.com/in/charleswrightii](https://www.linkedin.com/in/charleswrightii/)
